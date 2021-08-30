@@ -474,5 +474,5 @@ test_sentences(examples, reloaded_results)
 print('\nResults from model in local memory:')
 test_sentences(examples, original_results)
 
-print('\nRUNTIME:', str(datetime.now() - start)])
+print('\nRUNTIME:', str(datetime.now() - start))
 

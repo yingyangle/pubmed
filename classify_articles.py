@@ -203,6 +203,6 @@ group_labels = ['Precision', 'Recall', 'F Score']
 legend_labels = [x['name'] for x in models]
 graph(group_data, group_labels, legend_labels, 'Model', CHART_TITLE)
 
-print('\nRUNTIME:', str(datetime.now() - start)])
+print('\nRUNTIME:', str(datetime.now() - start))
 
 

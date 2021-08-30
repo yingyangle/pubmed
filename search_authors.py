@@ -89,7 +89,7 @@ for fullname in authors_to_search:
 	
 	time.sleep(3)
 
-print('\nRUNTIME:', str(datetime.now() - start)])
+print('\nRUNTIME:', str(datetime.now() - start))
 
 
 

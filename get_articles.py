@@ -62,4 +62,4 @@ with open(r'data/authors_{}_{}.json'.format(SEARCH_TERM, MAX_RESULTS), 'w') as a
 # Print first 10 rows of dataframe
 # print(articlesPD.head(10))
 
-print('\nRUNTIME:', str(datetime.now() - start)])
+print('\nRUNTIME:', str(datetime.now() - start))

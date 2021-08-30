@@ -244,7 +244,7 @@ elif len(sys.argv) > 2:
 	TEST_DATASET = sys.argv[4]
 	evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, TRAIN_DATASET, TEST_DATASET)
 
-print('\nRUNTIME:', str(datetime.now() - start)])
+print('\nRUNTIME:', str(datetime.now() - start))
 
 
 

@@ -467,4 +467,4 @@ plot_confusion_matrix(y_true=true_labels, y_pred=predictions_labels,
 											);
 plt.savefig(PUBMED_FOLDER+'results/confusion_matrix_{}.png'.format(BERT_MODEL_NICKNAME), dpi=300)
 
-print('\nRUNTIME:', str(datetime.now() - start)])
+print('\nRUNTIME:', str(datetime.now() - start))

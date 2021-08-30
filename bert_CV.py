@@ -526,7 +526,7 @@ for CURRENT_FOLD in range(NUM_FOLDS):
 	df_avg.to_csv(PUBMED_FOLDER+'PubMed_BERT_Models_CV_avg.csv', index=False, encoding='utf-8-sig')
 	print(df_avg, '\n')
 
-print('\nRUNTIME:', str(datetime.now() - start)])
+print('\nRUNTIME:', str(datetime.now() - start))
 
 
 
