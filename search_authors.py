@@ -88,10 +88,8 @@ for fullname in authors_to_search:
 		print(len(article_info), 'articles saved')
 	
 	time.sleep(3)
-		
 
-
-print('finished')
+print('\nRUNTIME:', str(datetime.now() - start)])
 
 
 

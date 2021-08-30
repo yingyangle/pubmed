@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os, re, json, numpy as np, pandas as pd, warnings
+from datetime import datetime
 import gensim
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
@@ -27,6 +28,7 @@ import seaborn
 
 seaborn.set()
 warnings.filterwarnings('ignore')
+start = datetime.now()
 
 BATCH = '2'
 CHART_TITLE = 'PubMed Classification (w2v)'
@@ -201,5 +203,6 @@ group_labels = ['Precision', 'Recall', 'F Score']
 legend_labels = [x['name'] for x in models]
 graph(group_data, group_labels, legend_labels, 'Model', CHART_TITLE)
 
+print('\nRUNTIME:', str(datetime.now() - start)])
 
 

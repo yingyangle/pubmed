@@ -7,8 +7,11 @@
 # saves author results as data/authors_*.json (info for all the authors for each article retrieved)
 
 import os, re, sys, json, pandas as pd
+from datetime import datetime
 from pymed import PubMed
+
 pubmed = PubMed(tool="PubMedSearcher", email="yangael@bc.edu")
+start = datetime.now()
 
 ## PUT YOUR SEARCH TERM HERE ##
 SEARCH_TERM = sys.argv[1]
@@ -59,3 +62,4 @@ with open(r'data/authors_{}_{}.json'.format(SEARCH_TERM, MAX_RESULTS), 'w') as a
 # Print first 10 rows of dataframe
 # print(articlesPD.head(10))
 
+print('\nRUNTIME:', str(datetime.now() - start)])

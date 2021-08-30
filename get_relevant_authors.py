@@ -6,6 +6,7 @@
 # saves results as data/authors_relevant.json
 
 import os, re, sys, json, pandas as pd, time
+from datetime import datetime
 from statistics import mean
 
 PREDICTED_ARTICLES = sys.argv[1]
@@ -50,7 +51,7 @@ print('avg. # authors per article:', mean(authors_per_article))
 with open('data/authors_relevant_new.json', 'w') as aus:
 	json.dump(author_data, aus)
 
-
+print('\nRUNTIME:', str(datetime.now() - start)])
 
 
 

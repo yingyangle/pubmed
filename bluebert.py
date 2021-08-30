@@ -45,8 +45,11 @@ from transformers import (AutoConfig,
 													set_seed,
 													)
 
-import matplotlib.pyplot as plt, seaborn
+import matplotlib.pyplot as plt
+import seaborn
+
 seaborn.set()
+start = datettime.now()
 
 """## Parameters"""
 
@@ -464,3 +467,4 @@ plot_confusion_matrix(y_true=true_labels, y_pred=predictions_labels,
 											);
 plt.savefig(PUBMED_FOLDER+'results/confusion_matrix_{}.png'.format(BERT_MODEL_NICKNAME), dpi=300)
 
+print('\nRUNTIME:', str(datetime.now() - start)])
