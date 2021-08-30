@@ -24,6 +24,7 @@ import seaborn
 
 seaborn.set()
 tf.get_logger().setLevel('ERROR')
+start = datetime.now()
 
 
 ###### Define function ######
@@ -169,7 +170,8 @@ def evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME_TRAIN, DATASET_N
 		'fscore': [fscore],
 		'accuracy': [accuracy],
 		'loss': [loss],
-		'date': [datetime.now().strftime("%d/%m/%Y %H:%M:%S")]
+		'date': [datetime.now().strftime("%d/%m/%Y %H:%M:%S")],
+		'time_taken': [str(datetime.now() - start)],
 	})).reset_index(drop=True)
 	df.to_csv(PUBMED_FOLDER+'PubMed_BERT_Models_Eval.csv', index=False, encoding='utf-8-sig')
 	print(df, '\n')
@@ -242,9 +244,8 @@ elif len(sys.argv) > 2:
 	TEST_DATASET = sys.argv[4]
 	evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, TRAIN_DATASET, TEST_DATASET)
 
+print('\nRUNTIME:', str(datetime.now() - start)])
 
-
-	
 
 
 

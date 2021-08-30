@@ -20,6 +20,7 @@ import seaborn
 
 seaborn.set()
 tf.get_logger().setLevel('ERROR')
+start = datetime.now()
 
 
 ##### SELECT DATASET #####
@@ -90,7 +91,7 @@ df = pd.DataFrame({
 df.to_csv(f'{PUBMED_FOLDER}results/predictions_{UNANNOTATED_DATASET}_{BERT_MODEL_NICKNAME}.csv', index=False, encoding='utf-8-sig')
 print(df)
 
-
+print('\nRUNTIME:', str(datetime.now() - start)])
 
 
 

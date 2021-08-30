@@ -42,7 +42,7 @@ def run_bert(write_pbs=True):
 				job_name = f'train_{BERT_MODEL_SELECTED}{DATASET}_{INPUT_TYPE}.pbs'
 				# write .pbs file
 				if write_pbs:
-					pbs = template + command + '\n'
+					pbs = template + command + '\necho "FINISHED"\n'
 					with open('pbs/'+job_name, 'w') as aus:
 						aus.write(pbs)
 				# push to queue
@@ -58,7 +58,7 @@ def run_bert_CV(write_pbs=True, CV=5):
 				job_name = f'CV_{BERT_MODEL_SELECTED}{DATASET}_{INPUT_TYPE}.pbs'
 				# write .pbs file
 				if write_pbs:
-					pbs = template + command + '\n'
+					pbs = template + command + '\necho "FINISHED"\n'
 					with open('pbs/'+job_name, 'w') as aus:
 						aus.write(pbs)
 				# push to queue
@@ -72,7 +72,7 @@ def run_bluebert(write_pbs=True):
 			job_name = f'bluebert_{DATASET}_{INPUT_TYPE}.pbs'
 			# write .pbs file
 			if write_pbs:
-				pbs = template + command + '\n'
+				pbs = template + command + '\necho "FINISHED"\n'
 				with open('pbs/'+job_name, 'w') as aus:
 					aus.write(pbs)
 			# push to queue
@@ -89,7 +89,7 @@ def run_eval(write_pbs=True):
 					job_name = f'eval_{BERT_MODEL_SELECTED}_{INPUT_TYPE}_train{TRAIN_DATASET}_test{TEST_DATASET}.pbs'
 					# write .pbs file
 					if write_pbs:
-						pbs = template + command + '\n'
+						pbs = template + command + '\necho "FINISHED"\n'
 						with open('pbs/'+job_name, 'w') as aus:
 							aus.write(pbs)
 					# push to queue

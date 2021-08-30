@@ -60,6 +60,7 @@ from palettable.wesanderson import IsleOfDogs3_4
 
 seaborn.set()
 tf.get_logger().setLevel('ERROR')
+start = datetime.now()
 
 
 ###### Format data ######
@@ -395,7 +396,8 @@ df = df.append(pd.DataFrame({
 	'fscore': [fscore],
 	'accuracy': [accuracy],
 	'loss': [loss],
-	'date': [datetime.now().strftime("%d/%m/%Y %H:%M:%S")]
+	'date': [datetime.now().strftime("%d/%m/%Y %H:%M:%S")],
+	'time_taken': [str(datetime.now() - start)],
 })).reset_index(drop=True)
 df.to_csv(PUBMED_FOLDER+'PubMed_BERT_Models.csv', index=False, encoding='utf-8-sig')
 print(df, '\n')
@@ -472,5 +474,5 @@ test_sentences(examples, reloaded_results)
 print('\nResults from model in local memory:')
 test_sentences(examples, original_results)
 
-
+print('\nRUNTIME:', str(datetime.now() - start)])
 

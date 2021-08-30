@@ -70,6 +70,7 @@ from palettable.wesanderson import IsleOfDogs3_4
 
 seaborn.set()
 tf.get_logger().setLevel('ERROR')
+start = datetime.date()
 
 
 ###### Define function ######
@@ -77,6 +78,7 @@ tf.get_logger().setLevel('ERROR')
 # format data, train bert model, and evaluate bert model for one CV fold
 def run_fold(CURRENT_FOLD):
 	BERT_MODEL_NICKNAME = f'{BERT_MODEL_NICKNAME_BASE}_CV{CURRENT_FOLD}'
+	fold_start = datetime.date()
 	
 	###### Format data ######
 
@@ -414,7 +416,8 @@ def run_fold(CURRENT_FOLD):
 		'fscore': [fscore],
 		'accuracy': [accuracy],
 		'loss': [loss],
-		'date': [datetime.now().strftime("%d/%m/%Y %H:%M:%S")]
+		'date': [datetime.now().strftime("%d/%m/%Y %H:%M:%S")],
+		'time_taken': [str(datetime.now() - fold_start)],
 	})).reset_index(drop=True)
 	df.to_csv(PUBMED_FOLDER+'PubMed_BERT_Models_CV.csv', index=False, encoding='utf-8-sig')
 	print(df, '\n')
@@ -517,12 +520,13 @@ for CURRENT_FOLD in range(NUM_FOLDS):
 		'fscore': [mean(df['fscore'])],
 		'accuracy': [mean(df['accuracy'])],
 		'loss': [mean(df['loss'])],
-		'date': [datetime.now().strftime("%d/%m/%Y %H:%M:%S")]
+		'date': [datetime.now().strftime("%d/%m/%Y %H:%M:%S")],
+		'time_taken': [str(datetime.now() - start)],
 	})).reset_index(drop=True)
 	df_avg.to_csv(PUBMED_FOLDER+'PubMed_BERT_Models_CV_avg.csv', index=False, encoding='utf-8-sig')
 	print(df_avg, '\n')
-	
 
+print('\nRUNTIME:', str(datetime.now() - start)])
 
 
 
