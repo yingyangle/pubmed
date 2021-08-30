@@ -1,0 +1,54 @@
+(pie) 0:58:02@compute002:~/pubmed python3 eval_bert.py 'title' 'smallbert' '1' '2'
+
+pubmed folder: /data/yangael/pubmed/
+train dataset: 1
+train dataset folder: bertdata/bertdata1_title
+test dataset: 2
+test dataset folder: bertdata/bertdata2_title
+bert model: small_bert/bert_en_uncased_L-4_H-512_A-8
+bert model nickname: smallbert1_title
+
+
+
+2021-08-12 00:58:17.750901: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /cm/shared/apps/torque/lib:/cm/shared/apps/torque/6.1.1/lib/
+2021-08-12 00:58:17.750972: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+Found 1662 files belonging to 2 classes.
+Using 1330 files for training.
+2021-08-12 00:59:40.723629: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /cm/shared/apps/torque/lib:/cm/shared/apps/torque/6.1.1/lib/
+2021-08-12 00:59:40.723780: W tensorflow/stream_executor/cuda/cuda_driver.cc:326] failed call to cuInit: UNKNOWN ERROR (303)
+2021-08-12 00:59:40.724550: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (compute002): /proc/driver/nvidia/version does not exist
+2021-08-12 00:59:40.766621: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Found 1662 files belonging to 2 classes.
+Using 332 files for validation.
+Found 449 files belonging to 2 classes.
+2021-08-12 00:59:41.983602: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:176] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-08-12 00:59:41.991497: I tensorflow/core/platform/profile_utils/cpu_utils.cc:114] CPU Frequency: 2394345000 Hz
+
+Abstract: b'Large differences excess mortality March 2020 country birth Sweden\n'
+Relevance : 0 (irrelevant)
+
+Abstract: b'Race ethnicity social environment health\n'
+Relevance : 1 (relevant)
+
+Abstract: b'Root Cause Analysis Barriers Timely Colonoscopy California Safety Net Health Systems\n'
+Relevance : 0 (irrelevant)
+2021-08-12 00:59:42.828377: W tensorflow/core/kernels/data/cache_dataset_ops.cc:768] The calling iterator did not fully read the dataset being cached. In order to avoid unexpected truncation of the dataset, the partially cached contents of the dataset  will be discarded. This can happen if you have an input pipeline similar to `dataset.cache().take(k).repeat()`. You should use `dataset.take(k).cache().repeat()` instead.
+INFO:absl:using Adamw optimizer
+INFO:absl:gradient_clip_norm=1.000000
+Traceback (most recent call last):
+  File "eval_bert.py", line 138, in <module>
+    metrics=metrics)
+  File "/data/yangael/.conda/envs/pie/lib/python3.7/site-packages/keras/engine/training.py", line 548, in compile
+    self.optimizer = self._get_optimizer(optimizer)
+  File "/data/yangael/.conda/envs/pie/lib/python3.7/site-packages/keras/engine/training.py", line 586, in _get_optimizer
+    return tf.nest.map_structure(_get_single_optimizer, optimizer)
+  File "/data/yangael/.conda/envs/pie/lib/python3.7/site-packages/tensorflow/python/util/nest.py", line 867, in map_structure
+    structure[0], [func(*x) for x in entries],
+  File "/data/yangael/.conda/envs/pie/lib/python3.7/site-packages/tensorflow/python/util/nest.py", line 867, in <listcomp>
+    structure[0], [func(*x) for x in entries],
+  File "/data/yangael/.conda/envs/pie/lib/python3.7/site-packages/keras/engine/training.py", line 577, in _get_single_optimizer
+    opt = optimizers.get(opt)
+  File "/data/yangael/.conda/envs/pie/lib/python3.7/site-packages/keras/optimizers.py", line 133, in get
+    'Could not interpret optimizer identifier: {}'.format(identifier))
+ValueError: Could not interpret optimizer identifier: <official.nlp.optimization.AdamWeightDecay object at 0x2aabf5c6ca10>

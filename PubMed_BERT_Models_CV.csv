@@ -1,0 +1,26 @@
+﻿id,model_id,fold,bert_model,input_type,dataset,precision,recall,fscore,accuracy,loss,date
+bert1_title+abstract_CV0,bert1_title+abstract,0,bert,title+abstract,1,0.886816728,0.875993455,0.879446675,0.877403855,0.346703649,27/08/2021 11:58:48
+bert1_title+abstract_CV1,bert1_title+abstract,1,bert,title+abstract,1,0.894554974,0.897207646,0.895620715,0.903846145,0.305923402,27/08/2021 13:40:29
+bert1_title+abstract_CV2,bert1_title+abstract,2,bert,title+abstract,1,0.864326221,0.866113135,0.864713827,0.884337366,0.36420086,27/08/2021 15:21:59
+bert1_title+abstract_CV3,bert1_title+abstract,3,bert,title+abstract,1,0.869755245,0.868775282,0.867442171,0.872289181,0.371948272,27/08/2021 17:17:15
+bert1_title+abstract_CV4,bert1_title+abstract,4,bert,title+abstract,1,0.85913475,0.858050355,0.857748729,0.867469907,0.388327032,27/08/2021 19:37:54
+bert2_title+abstract_CV0,bert2_title+abstract,0,bert,title+abstract,2,0.959877279,0.959877279,0.959877279,0.973273933,0.12444327,27/08/2021 17:15:34
+bert2_title+abstract_CV1,bert2_title+abstract,1,bert,title+abstract,2,0.954485567,0.955905323,0.955117953,0.962138057,0.159557089,27/08/2021 23:28:01
+bert2_title+abstract_CV2,bert2_title+abstract,2,bert,title+abstract,2,0.973291876,0.973291876,0.973214286,0.986607134,0.063728936,28/08/2021 05:40:18
+bert2_title+abstract_CV3,bert2_title+abstract,3,bert,title+abstract,2,0.939114833,0.942155977,0.939572874,0.955357134,0.186522365,28/08/2021 11:52:47
+bert2_title+abstract_CV4,bert2_title+abstract,4,bert,title+abstract,2,0.964285714,0.964285714,0.964285714,0.966517866,0.161708429,28/08/2021 18:04:36
+electra1_title+abstract_CV0,electra1_title+abstract,0,electra,title+abstract,1,0.852363706,0.845675549,0.848006977,0.846153855,0.470235497,27/08/2021 12:49:03
+electra1_title+abstract_CV1,electra1_title+abstract,1,electra,title+abstract,1,0.872805795,0.876124438,0.873948209,0.889423072,0.307487845,27/08/2021 15:08:41
+electra1_title+abstract_CV2,electra1_title+abstract,2,electra,title+abstract,1,0.856176032,0.857074458,0.852998391,0.850602388,0.368850917,27/08/2021 17:28:22
+electra1_title+abstract_CV3,electra1_title+abstract,3,electra,title+abstract,1,0.851661836,0.849781466,0.848104575,0.84096384,0.421151549,27/08/2021 19:47:55
+electra1_title+abstract_CV4,electra1_title+abstract,4,electra,title+abstract,1,0.825600039,0.811306731,0.809811986,0.836144567,0.453254998,27/08/2021 22:07:32
+electra2_abstract_CV0,electra2_title+abstract,0,electra,abstract,2,0.951301397,0.948396983,0.948896357,0.949029148,0.224083632,27/08/2021 12:56:56
+electra2_abstract_CV1,electra2_title+abstract,1,electra,abstract,2,0.951236573,0.947133459,0.948722183,0.949275374,0.228104398,27/08/2021 15:29:27
+electra2_abstract_CV2,electra2_title+abstract,2,electra,abstract,2,0.960606061,0.959330144,0.959301959,0.966507196,0.121648423,27/08/2021 17:55:01
+electra2_abstract_CV3,electra2_title+abstract,3,electra,abstract,2,0.938443936,0.937003923,0.937637061,0.938095212,0.228755593,27/08/2021 20:13:58
+electra2_abstract_CV4,electra2_title+abstract,4,electra,abstract,2,0.951656422,0.951508115,0.951559934,0.949152529,0.243158445,27/08/2021 22:33:31
+talkingheads1+2_title+abstract_CV0,talkingheads1+2_title+abstract,0,talkingheads,title+abstract,1+2,0.894693112,0.894426707,0.894549079,0.910982668,0.437322795,27/08/2021 18:34:41
+talkingheads1+2_title+abstract_CV1,talkingheads1+2_title+abstract,1,talkingheads,title+abstract,1+2,0.901756864,0.901627947,0.901681543,0.913294792,0.358445406,28/08/2021 01:14:27
+talkingheads1+2_title+abstract_CV2,talkingheads1+2_title+abstract,2,talkingheads,title+abstract,1+2,0.891256039,0.890830174,0.890039078,0.91782409,0.354262084,28/08/2021 07:54:14
+talkingheads1+2_title+abstract_CV3,talkingheads1+2_title+abstract,3,talkingheads,title+abstract,1+2,0.894579349,0.894318786,0.894438216,0.90625,0.467162818,28/08/2021 14:35:21
+talkingheads1+2_title+abstract_CV4,talkingheads1+2_title+abstract,4,talkingheads,title+abstract,1+2,0.905043103,0.903185755,0.903673884,0.921296299,0.34779942,29/08/2021 00:47:47

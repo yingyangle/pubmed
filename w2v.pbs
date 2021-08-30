@@ -1,0 +1,8 @@
+#!/bin/tcsh
+#PBS -l mem=1gb,nodes=1:ppn=1,walltime=10:00:00
+#PBS -m abe -M yangael@bc.edu
+cd pubmed
+conda activate tf
+
+python3 classify_articles.py
+#python3 classify_articles2.py

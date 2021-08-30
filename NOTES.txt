@@ -1,0 +1,18 @@
+#############
+couldn't install tensorflow because no space left on device:
+ERROR:
+Could not install packages due to an EnvironmentError: [Errno 28] No space left on device
+FIX:
+df
+setenv TMPDIR '/var/tmp'
+#############
+
+#############
+installing tensorflow - not in path:
+FIX:
+setenv PATH "$HOME/data/yangael/.local/bin:$PATH"
+#############
+
+
+
+
