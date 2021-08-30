@@ -9,19 +9,18 @@ from nltk.tokenize import RegexpTokenizer
 
 os.chdir('data')
 
-# use either 'abstract' or 'title' or 'title+abstract' as training data
-TEXT_COLUMN = sys.argv[1]
+TEXT_COLUMN = sys.argv[1] # use 'abstract' or 'title' or 'title+abstract' as training data
+DATASET = sys.argv[2] # which annotations dataset to use ('1' or '2')
 
-BATCH = sys.argv[2]
-ANNOTATIONS_FILE = 'annotations{}.csv'.format(BATCH)
-ARTICLE_INFO = 'article_info{}.csv'.format(BATCH)
-OUTPUT_FOLDER = '../bertdata/bertdata{}_{}'.format(BATCH, TEXT_COLUMN)
+ANNOTATIONS_FILE = 'annotations{}.csv'.format(DATASET)
+ARTICLE_INFO = 'article_info{}.csv'.format(DATASET)
+OUTPUT_FOLDER = '../bertdata/bertdata{}_{}'.format(DATASET, TEXT_COLUMN)
 
 TRAIN_TEST_SPLIT = 0.8
 tokenizer = RegexpTokenizer(r'\w+')
 
 print('input type:', TEXT_COLUMN)
-print('batch:', BATCH)
+print('batch:', DATASET)
 print('annotations file:', ANNOTATIONS_FILE)
 print('article info:', ARTICLE_INFO)
 print('output folder:', OUTPUT_FOLDER)
@@ -81,7 +80,6 @@ for i,row in df.iterrows():
 	os.system('echo {} > {}/{}/{}/{}.txt'.format(abstract, OUTPUT_FOLDER, CURRENT_FOLDER, label, i))
 	
 	if not i % 100: print('{} / {}'.format(i, df.shape[0]))
-
 
 
 

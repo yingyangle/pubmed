@@ -1,13 +1,18 @@
 #!/Users/christine/anaconda3/bin/python
 # -*- coding: utf-8 -*-
 
+# get_articles.py
+# retrieve PubMed articles for a given search term
+# saves article results as data/pubmed_articles_*.csv
+# saves author results as data/authors_*.json (info for all the authors for each article retrieved)
+
 import os, re, sys, json, pandas as pd
 from pymed import PubMed
 pubmed = PubMed(tool="PubMedSearcher", email="yangael@bc.edu")
 
 ## PUT YOUR SEARCH TERM HERE ##
 SEARCH_TERM = sys.argv[1]
-MAX_RESULTS = 100000000 #100000
+MAX_RESULTS = 10000000 #100000
 results = pubmed.query(SEARCH_TERM, max_results=MAX_RESULTS)
 articleList = []
 articleInfo = []
@@ -47,11 +52,10 @@ for article in articleList:
 articlesPD = pd.DataFrame.from_dict(articleInfo)
 
 # save results
-export_csv = articlesPD.to_csv (r'pubmed_articles_{}_{}.csv'.format(SEARCH_TERM, MAX_RESULTS), index = None, header=True, encoding="utf-8")
-with open(r'authors_{}_{}.json'.format(SEARCH_TERM, MAX_RESULTS), 'w') as aus:
+export_csv = articlesPD.to_csv (r'data/pubmed_articles_{}_{}.csv'.format(SEARCH_TERM, MAX_RESULTS), index = None, header=True, encoding="utf-8")
+with open(r'data/authors_{}_{}.json'.format(SEARCH_TERM, MAX_RESULTS), 'w') as aus:
 	json.dump(authorInfo, aus)
 
 # Print first 10 rows of dataframe
 # print(articlesPD.head(10))
-
 

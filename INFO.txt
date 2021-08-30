@@ -1,0 +1,124 @@
+
+#### CONDA ENVIRONMENTS #####
+
+# Method 1 - install packages using conda
+conda create --name pubmed
+conda activate pubmed
+./conda_install_packages.sh
+
+# Method 2 - install packages using pip
+conda create --name pubmed
+conda activate pubmed
+conda install pip
+pip install -r requirements.txt
+
+
+#### GET PUBMED ARTICLES #####
+
+- get_articles.py
+	- uses a search query and the PubMed API to retrieve list of articles matching the search term
+	- includes title, abstract, author, and publication date information
+	- saves articles retrieved as pubmed_articles_*.csv
+	- saves author info for articles retrieved as authors_*.json
+- combine_articles.py
+	- combines all pubmed_articles_*.csv files into to_annotate.csv
+	- combines all authors_*.json into authors.json
+	- removes articles that have already been annotated in a given annotations file
+
+
+#### MANUAL ANNOTATION #####
+
+- go through the to_annotate*.csv file and add manual annotations
+	- 0 = irrelevant
+	- 1 = relevant
+	- 3 = unsure
+
+
+#### FORMAT ANNOTATED DATA #####
+
+- split_annotations_info.py
+	- takes in to_annotate*.csv file
+	- splits annotations into annotations*.csv and article_info*.csv
+	* after running, move output files to data folder
+- update_annotations.py
+	- updates a given annotations.csv file with new fixed annotations
+- combine_annotations.py
+	- combines all annotations*.csv files and article_info*.csv files
+	- creates a single annotations1+2.csv and article_info1+2.csv (or whatever you want to name the output files)
+
+#### FORMAT UNANNOTATED DATA #####
+
+- create_data_dir_test.py
+	- formats data directory for training BERT models for unannotated data
+	- takes in TO_ANNOTATE file (result of get_articles.py)
+	- saves formatted data folder as bertdata/bertdata_*
+
+#### RUN MODELS - WORD2VEC #####
+
+- classify_articles.py
+	- trains a bunch of models using w2v embeddings
+	- uses the w2v embeddings in PubMed-and-PMC-w2v.bin (on the cluster) 
+	- saves results as .png graph
+
+
+#### RUN MODELS - BERT #####
+
+#### format data for BERT models ###
+- create_data_dir.py
+	- formats data directory for training BERT models
+	- takes in an ANNOTATIONS_FILE and ARTICLE_INFO file
+	- saves formatted data folder as bertdata/bertdata_*
+- create_data_dir_CV.py
+	- formats data directory for training BERT models for cross validation
+	- takes in an ANNOTATIONS_FILE and ARTICLE_INFO file
+	- saves formatted data folder as bertdata/bertdata_*_CV, with each subfolder within that being the data for one fold
+
+### train/test BERT models ###
+- bert.py
+	- trains a model using a given BERT model as the base and performs fine-tuning using annotations
+	- updates PubMed_BERT_Models.csv with evaluation results
+	- saves training history as results/training_history_*.json and results/training_history_*.png graph
+	- saves predictions as results/predictions_*.json and results/predictions_*_raw.json
+	- saves fine-tuned model in /saved_models
+- bert_CV.py
+	- does same thing as bert.py but uses cross validation
+	- updates PubMed_BERT_Models_CV.csv with evaluation results
+- bert_eval.py
+	- loads saved fine-tuned model and tests it on data from bertdata/bertdata_*
+	- updates PubMed_BERT_Models_Eval.csv with evaluation results
+	- saves predictions as results/predictions_*_test*.json and results/predictions_*_test*_raw.json
+- bert_predict.py
+	- loads saved fine-tuned model and gets predictions for data in bertdata/bertdata_*
+	- saves predictions as results/predictions_*.csv and results/predictions_*_raw.csv
+- bluebert.py
+	- WIP
+
+### graph results ###
+- graph_bert_acc.py
+	- takes in PubMed_BERT_Models.csv and graphs accuracy results as bar chart
+	- saves results as .png graph
+- graph_bert_history.py
+	- takes in training_history*.json and graphs training history as line chart
+	- saves output as .png graph
+
+
+#### GET ARTICLES BY RELEVANT AUTHORS #####
+
+- get_relevant_authors.py
+	- get authors for articles marked as relevant in annotations and predictions, given a predictions file
+	- saves results as data/authors_relevant.json
+
+- search_authors.py
+	- search for more articles by relevant authors
+
+
+
+
+
+
+
+
+
+
+
+

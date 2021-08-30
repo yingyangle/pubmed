@@ -496,6 +496,9 @@ def run_fold(CURRENT_FOLD):
 
 # execute for each CV fold
 for CURRENT_FOLD in range(NUM_FOLDS):
+	print('\n\n####################################')
+	print('Fold', CURRENT_FOLD)
+	print('####################################\n\n')
 	run_fold(CURRENT_FOLD)
 	
 	# get avg of results from each fold
@@ -519,7 +522,6 @@ for CURRENT_FOLD in range(NUM_FOLDS):
 	df_avg.to_csv(PUBMED_FOLDER+'PubMed_BERT_Models_CV_avg.csv', index=False, encoding='utf-8-sig')
 	print(df_avg, '\n')
 	
-
 
 
 

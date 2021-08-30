@@ -51,8 +51,6 @@ stoplist.extend(["ever", "one", "do","does","make", "go", "us", "to", "get", "ab
 df = pd.read_csv(ANNOTATIONS_FILE)
 df = df[df['relevance'] < 2]
 labels = {int(row['pubmed_id']):int(row['relevance']) for i,row in df.iterrows()}
-THRESHOLD = int(len(labels) * TRAIN_TEST_SPLIT) # define threshold using train_test_split
-print(len(labels), THRESHOLD)
 
 # read in abstracts and titles
 df = pd.read_csv(ARTICLE_INFO)
@@ -90,7 +88,6 @@ for current_fold_i,current_fold in enumerate(folds): # for each fold
 			os.system(command)
 
 			if not i % 100: print('{} / {}'.format(i, df.shape[0]))
-
 
 
 

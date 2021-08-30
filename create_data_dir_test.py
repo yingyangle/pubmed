@@ -3,7 +3,7 @@
 
 # create_data_dir_test.py
 # create data directory for testing BERT model on unannotated data
-# save formatted data in bertdata/
+# save formatted data folder as bertdata/bertdata_*
 
 import os, sys, pandas as pd
 from nltk.corpus import stopwords
@@ -12,7 +12,7 @@ from nltk.tokenize import RegexpTokenizer
 os.chdir('data')
 
 TEXT_COLUMN = sys.argv[1] # use 'abstract' or 'title' or 'title+abstract' as training data
-ARTICLE_INFO = sys.argv[2] # .csv file containing article info (e.g. article_info_*.csv or to_annotate.csv)
+ARTICLE_INFO = sys.argv[2] # .csv file containing article info (e.g. to_annotate.csv)
 NICKNAME = sys.argv[3] # nickname for this dataset
 OUTPUT_FOLDER = f'../bertdata/bertdata_{NICKNAME}_{TEXT_COLUMN}'
 
@@ -55,7 +55,6 @@ for i,row in df.iterrows():
 	os.system('echo {} > {}/{}.txt'.format(abstract, OUTPUT_FOLDER, row['pubmed_id']))
 	
 	if not i % 100: print('{} / {}'.format(i, df.shape[0]))
-
 
 
 
