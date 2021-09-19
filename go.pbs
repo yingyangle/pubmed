@@ -1,0 +1,19 @@
+#!/bin/tcsh
+#PBS -l mem=20gb,nodes=1:ppn=1,walltime=10:00:00
+#PBS -m abe -M yangael@bc.edu
+#advres=gpgpu2
+echo $HOSTNAME
+cd pubmed
+conda activate tf
+
+# python bert.py 'smallbert' 'title' '2'
+python bert_CV.py 'smallbert' 'title' '2' '5'
+# python bert_eval.py 'smallbert' 'title' '1' '2'
+# python bert_eval.py
+# python bert_predict.py 'smallbert' 'title' '2' 'unannotated'
+
+# NOTES:
+# python bert.py BERT_MODEL INPUT_TYPE DATASET_NAME
+# python bertCV.py BERT_MODEL INPUT_TYPE DATASET_NAME NUM_CV_FOLDS 
+# python bert_eval.py BERT_MODEL INPUT_TYPE TRAIN_DATASET TEST_DATASET
+# python bert_predict.py BERT_MODEL INPUT_TYPE TRAIN_DATASET UNANNOTATED_DATASET

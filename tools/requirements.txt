@@ -9,6 +9,7 @@ palettable
 nltk
 sklearn
 gensim
+pymed
 
 tensorflow
 tensorflow_hub

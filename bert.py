@@ -15,8 +15,8 @@ import sys
 
 INPUT_TYPE = sys.argv[2]
 DATASET_NAME = sys.argv[3]
-DATASET_FOLDER = 'bertdata/bertdata{}_{}'.format(DATASET_NAME, INPUT_TYPE)
-PUBMED_FOLDER = '/data/yangael/pubmed/'
+DATASET_FOLDER = f'bertdata/bertdata{DATASET_NAME}_{INPUT_TYPE}'
+PUBMED_FOLDER = '.' # direct this to main pubmed folder
 
 print('\npubmed folder:', PUBMED_FOLDER)
 print('dataset:', DATASET_NAME)
@@ -35,7 +35,7 @@ bert_models_dict = {
 	'talkingheads': 'talking-heads_base',
 }
 BERT_MODEL_NAME = bert_models_dict[BERT_MODEL_SELECTED]
-BERT_MODEL_NICKNAME = '{}{}_{}'.format(BERT_MODEL_SELECTED, DATASET_NAME, INPUT_TYPE)
+BERT_MODEL_NICKNAME = f'{BERT_MODEL_SELECTED}{DATASET_NAME}_{INPUT_TYPE}'
 
 print('bert model:', BERT_MODEL_NAME)
 print('bert model nickname:', BERT_MODEL_NICKNAME)
@@ -71,7 +71,7 @@ seed = 42
 
 # get training data
 raw_train_ds = tf.keras.preprocessing.text_dataset_from_directory(
-	PUBMED_FOLDER+DATASET_FOLDER+'/train',
+	f'{PUBMED_FOLDER}/{DATASET_FOLDER}/train',
 	batch_size=batch_size,
 	validation_split=0.2,
 	subset='training',
@@ -81,7 +81,7 @@ train_ds = raw_train_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
 # get validation data
 val_ds = tf.keras.preprocessing.text_dataset_from_directory(
-	PUBMED_FOLDER+DATASET_FOLDER+'/train',
+	f'{PUBMED_FOLDER}/{DATASET_FOLDER}/train',
 	batch_size=batch_size,
 	validation_split=0.2,
 	subset='validation',
@@ -90,7 +90,7 @@ val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
 # get test data
 test_ds = tf.keras.preprocessing.text_dataset_from_directory(
-	PUBMED_FOLDER+DATASET_FOLDER+'/test',
+	f'{PUBMED_FOLDER}/{DATASET_FOLDER}/test',
 	batch_size=batch_size)
 test_ds = test_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
@@ -310,7 +310,7 @@ print(tf.sigmoid(bert_raw_result))
 
 # # show model structure
 # # tf.keras.utils.plot_model(model)
-# tf.keras.utils.plot_model(model, to_file=PUBMED_FOLDER+'bert_layers.png', dpi=200)
+# tf.keras.utils.plot_model(model, to_file=f'{PUBMED_FOLDER}/bert_layers.png', dpi=200)
 
 ### Loss function ###
 # use binary crossentropy for binary classification
@@ -345,7 +345,7 @@ history = model.fit(x=train_ds,
 					epochs=epochs)
 
 # save fine-tuned model for future use
-model.save(PUBMED_FOLDER+'saved_models/'+BERT_MODEL_NICKNAME, include_optimizer=False)
+model.save(f'{PUBMED_FOLDER}/saved_models/'+BERT_MODEL_NICKNAME, include_optimizer=False)
 
 
 ###### Evaluate model ######
@@ -372,20 +372,20 @@ predictions_thresh = [1 if tf.sigmoid(x) >= 0.5 else 0 for x in predictions]
 print('predictions length check', len(texts), len(labels), len(predictions), len(predictions_thresh))
 
 # interpret and save predictions
-with open(f'{PUBMED_FOLDER}results/predictions_{BERT_MODEL_NICKNAME}_raw.json', 'w') as aus:
+with open(f'{PUBMED_FOLDER}/results/predictions_{BERT_MODEL_NICKNAME}_raw.json', 'w') as aus:
 	json.dump(predictions, aus)
-with open(f'{PUBMED_FOLDER}results/predictions_{BERT_MODEL_NICKNAME}.json', 'w') as aus:
+with open(f'{PUBMED_FOLDER}/results/predictions_{BERT_MODEL_NICKNAME}.json', 'w') as aus:
 	json.dump(predictions_thresh, aus)
 
 # evaluate predictions
 precision, recall, fscore, support = precision_recall_fscore_support(labels, predictions_thresh, average='macro')
-print(f'\n\nPrecision: {accuracy}')
+print(f'\n\nPrecision: {precision}')
 print(f'Recall: {recall}')
 print(f'F Score: {fscore}')
 print(f'Support: {support}\n')
 
 # save accuracy and loss to .csv
-df = pd.read_csv(PUBMED_FOLDER+'PubMed_BERT_Models.csv')
+df = pd.read_csv(f'{PUBMED_FOLDER}/PubMed_BERT_Models.csv')
 df = df.append(pd.DataFrame({
 	'id': [BERT_MODEL_NICKNAME],
 	'bert_model': [BERT_MODEL_SELECTED],
@@ -396,10 +396,10 @@ df = df.append(pd.DataFrame({
 	'fscore': [fscore],
 	'accuracy': [accuracy],
 	'loss': [loss],
-	'date': [datetime.now().strftime("%d/%m/%Y %H:%M:%S")],
+	'date': [datetime.now().strftime("%Y/%m/%d %H:%M:%S")],
 	'time_taken': [str(datetime.now() - start)],
 })).reset_index(drop=True)
-df.to_csv(PUBMED_FOLDER+'PubMed_BERT_Models.csv', index=False, encoding='utf-8-sig')
+df.to_csv(f'{PUBMED_FOLDER}/PubMed_BERT_Models.csv', index=False, encoding='utf-8-sig')
 print(df, '\n')
 
 
@@ -407,7 +407,7 @@ print(df, '\n')
 
 # save training history to .json
 history_dict = history.history
-with open(PUBMED_FOLDER+'results/training_history_{}.json'.format(BERT_MODEL_NICKNAME), 'w') as aus:
+with open(f'{PUBMED_FOLDER}/results/training_history_{BERT_MODEL_NICKNAME}.json', 'w') as aus:
 	json.dump(history_dict, aus)
 
 COLOR1 = IsleOfDogs3_4.hex_colors[3] # training
@@ -445,13 +445,13 @@ plt.ylabel('Accuracy', fontsize=20)
 plt.legend(loc='lower right', fontsize=14)
 
 # save image
-fig.savefig(PUBMED_FOLDER+'results/training_history_{}.png'.format(BERT_MODEL_NICKNAME), dpi=300)
+fig.savefig(f'{PUBMED_FOLDER}/results/training_history_{BERT_MODEL_NICKNAME}.png', dpi=300)
 
 
 ###### Load & test saved model ######
 
 # load saved model
-reloaded_model = keras.models.load_model(PUBMED_FOLDER+'saved_models/'+BERT_MODEL_NICKNAME)
+reloaded_model = keras.models.load_model(f'{PUBMED_FOLDER}/saved_models/{BERT_MODEL_NICKNAME}')
 
 # test some example sentences on the model
 def test_sentences(inputs, results):
@@ -475,4 +475,5 @@ print('\nResults from model in local memory:')
 test_sentences(examples, original_results)
 
 print('\nRUNTIME:', str(datetime.now() - start))
+
 

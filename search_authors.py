@@ -28,7 +28,7 @@ print('# articles already saved:', len(article_info), '\n')
 def save_results():
 	# save results to .json and .csv
 	with open('articles_by_relevant_authors.json', 'w') as aus:
-		json.dump(article_info, aus)
+		json.dump(article_info, aus, indent=2)
 
 	df = pd.DataFrame({
 		'firstname': [x['firstname'] for x in article_info],
@@ -76,20 +76,21 @@ for fullname in authors_to_search:
 				'authors': article['authors'],
 				'doi': article['doi'],
 			})
-			# print(article)
 	except:
 		print('\n\n######### FAILED #########\n')
 		print(author)
 		print('\n#########\n\n')
 	
+	i += 1
 	# save progress
 	if not i % 500: 
 		save_results()
-		print(len(article_info), 'articles saved')
+		print(f'{len(article_info)} articles saved, {len(authors_already_searched)+i} / {len(authors_to_search)} authors searched')
 	
 	time.sleep(3)
 
 print('\nRUNTIME:', str(datetime.now() - start))
+
 
 
 

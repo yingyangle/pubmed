@@ -1,19 +1,18 @@
 #!/bin/tcsh
-#PBS -l mem=8gb,nodes=1:ppn=1,walltime=40:00:00
+#PBS -l mem=8gb,nodes=1:ppn=1,walltime=200:00:00
 #PBS -m abe -M yangael@bc.edu
 cd pubmed
 conda activate tf
 
-# python3 get_articles.py 'disparity' 
-# python3 combine_articles.py
-# python3 create_data_dir.py 'title+abstract' '1+2'
-# python3 create_data_dir_CV.py 'title+abstract' '2' '5'
-# python create_data_dir_test.py 'title' 'unannotated_articles.csv' 'unannotated'
-# python3 get_relevant_authors.py 'results/predictions_unannotated_talkingheads1+2_title+abstract.csv'
-python3 search_authors.py
+# python get_articles.py 'disparity' 
+# python combine_articles.py
+python format_bert_data.py 'full'
+# python get_relevant_authors.py 'results/predictions_unannotated_talkingheads1+2_title+abstract.csv'
+# python search_authors.py
 
 # NOTES:
-# python3 get_articles.py SEARCH_TERM
-# python3 create_data_dir.py INPUT_TYPE DATASET_NAME
-# python3 create_data_dir_CV.py INPUT_TYPE DATASET_NAME NUM_CV_FOLDS
-# python3 create_data_dir_test.py INPUT_TYPE ARTICLE_INFO_CSV DATASET_NICKNAME
+# python get_articles.py SEARCH_TERM
+# python combine_articles.py
+# python format_bert_data.py DATASET_SPLIT_TYPE
+# python get_relevant_authors.py ARTICLE_PREDICTIONS
+# python search_authors.py

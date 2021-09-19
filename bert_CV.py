@@ -23,8 +23,8 @@ import sys
 INPUT_TYPE = sys.argv[2]
 DATASET_NAME = sys.argv[3]
 NUM_FOLDS = int(sys.argv[4]) # num folds for cross val, must match bertdata
-DATASET_FOLDER = 'bertdata/bertdata{}_{}_CV'.format(DATASET_NAME, INPUT_TYPE)
-PUBMED_FOLDER = '/data/yangael/pubmed/'
+DATASET_FOLDER = f'bertdata/bertdata{DATASET_NAME}_{INPUT_TYPE}_CV'
+PUBMED_FOLDER = '.' # direct this to main pubmed folder
 
 print('\npubmed folder:', PUBMED_FOLDER)
 print('dataset:', DATASET_NAME)
@@ -44,7 +44,7 @@ bert_models_dict = {
 	'talkingheads': 'talking-heads_base',
 }
 BERT_MODEL_NAME = bert_models_dict[BERT_MODEL_SELECTED]
-BERT_MODEL_NICKNAME_BASE = '{}{}_{}'.format(BERT_MODEL_SELECTED, DATASET_NAME, INPUT_TYPE)
+BERT_MODEL_NICKNAME_BASE = f'{BERT_MODEL_SELECTED}{DATASET_NAME}_{INPUT_TYPE}'
 
 print('bert model:', BERT_MODEL_NAME)
 print('bert model nickname:', BERT_MODEL_NICKNAME_BASE)
@@ -70,15 +70,28 @@ from palettable.wesanderson import IsleOfDogs3_4
 
 seaborn.set()
 tf.get_logger().setLevel('ERROR')
-start = datetime.date()
+start = datetime.now()
+
+all_results = {
+	'precision': [],
+	'recall': [],
+	'fscore': [],
+	'accuracy': [],
+	'loss': [],
+}
+all_predictions = []
+all_predictions_thresh = []
 
 
 ###### Define function ######
 
 # format data, train bert model, and evaluate bert model for one CV fold
 def run_fold(CURRENT_FOLD):
+	global all_predictions
+	global all_predictions_thresh
+	
 	BERT_MODEL_NICKNAME = f'{BERT_MODEL_NICKNAME_BASE}_CV{CURRENT_FOLD}'
-	fold_start = datetime.date()
+	fold_start = datetime.now()
 	
 	###### Format data ######
 
@@ -88,7 +101,7 @@ def run_fold(CURRENT_FOLD):
 
 	# get training data
 	raw_train_ds = tf.keras.preprocessing.text_dataset_from_directory(
-		f'{PUBMED_FOLDER}{DATASET_FOLDER}/{CURRENT_FOLD}/train',
+		f'{PUBMED_FOLDER}/{DATASET_FOLDER}/{CURRENT_FOLD}/train',
 		batch_size=batch_size,
 		validation_split=0.2,
 		subset='training',
@@ -98,7 +111,7 @@ def run_fold(CURRENT_FOLD):
 
 	# get validation data
 	val_ds = tf.keras.preprocessing.text_dataset_from_directory(
-		f'{PUBMED_FOLDER}{DATASET_FOLDER}/{CURRENT_FOLD}/train',
+		f'{PUBMED_FOLDER}/{DATASET_FOLDER}/{CURRENT_FOLD}/train',
 		batch_size=batch_size,
 		validation_split=0.2,
 		subset='validation',
@@ -107,7 +120,7 @@ def run_fold(CURRENT_FOLD):
 
 	# get test data
 	test_ds = tf.keras.preprocessing.text_dataset_from_directory(
-		f'{PUBMED_FOLDER}{DATASET_FOLDER}/{CURRENT_FOLD}/test',
+		f'{PUBMED_FOLDER}/{DATASET_FOLDER}/{CURRENT_FOLD}/test',
 		batch_size=batch_size)
 	test_ds = test_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
@@ -328,7 +341,7 @@ def run_fold(CURRENT_FOLD):
 
 	# # show model structure
 	# # tf.keras.utils.plot_model(model)
-	# tf.keras.utils.plot_model(model, to_file=PUBMED_FOLDER+'bert_layers.png', dpi=200)
+	# tf.keras.utils.plot_model(model, to_file=f'{PUBMED_FOLDER}/bert_layers.png', dpi=200)
 
 	### Loss function ###
 	# use binary crossentropy for binary classification
@@ -363,7 +376,7 @@ def run_fold(CURRENT_FOLD):
 						epochs=epochs)
 
 	# save fine-tuned model for future use
-	model.save(f'{PUBMED_FOLDER}saved_models/{BERT_MODEL_NICKNAME}')
+	model.save(f'{PUBMED_FOLDER}/saved_models/{BERT_MODEL_NICKNAME}')
 
 
 	###### Evaluate model ######
@@ -390,10 +403,12 @@ def run_fold(CURRENT_FOLD):
 	print('predictions length check', len(texts), len(labels), len(predictions), len(predictions_thresh))
 
 	# interpret and save predictions
-	with open(f'{PUBMED_FOLDER}results/predictions_{BERT_MODEL_NICKNAME}_raw.json', 'w') as aus:
+	with open(f'{PUBMED_FOLDER}/results/predictions_{BERT_MODEL_NICKNAME}_raw.json', 'w') as aus:
 		json.dump(predictions, aus)
-	with open(f'{PUBMED_FOLDER}results/predictions_{BERT_MODEL_NICKNAME}.json', 'w') as aus:
+	with open(f'{PUBMED_FOLDER}/results/predictions_{BERT_MODEL_NICKNAME}.json', 'w') as aus:
 		json.dump(predictions_thresh, aus)
+	all_predictions.extend(predictions)
+	all_predictions_thresh.extend(predictions)
 
 	# evaluate predictions
 	precision, recall, fscore, support = precision_recall_fscore_support(labels, predictions_thresh, average='macro')
@@ -401,9 +416,16 @@ def run_fold(CURRENT_FOLD):
 	print(f'Recall: {recall}')
 	print(f'F Score: {fscore}')
 	print(f'Support: {support}\n')
+	
+	# save accuracy to all_results dict
+	all_results['precision'].append(precision)
+	all_results['recall'].append(recall)
+	all_results['fscore'].append(fscore)
+	all_results['accuracy'].append(accuracy)
+	all_results['loss'].append(loss)
 
 	# save accuracy and loss to .csv
-	df = pd.read_csv(PUBMED_FOLDER+'PubMed_BERT_Models_CV.csv')
+	df = pd.read_csv(f'{PUBMED_FOLDER}/PubMed_BERT_Models_CV.csv')
 	df = df.append(pd.DataFrame({
 		'id': [BERT_MODEL_NICKNAME],
 		'model_id': [BERT_MODEL_NICKNAME_BASE],
@@ -416,10 +438,10 @@ def run_fold(CURRENT_FOLD):
 		'fscore': [fscore],
 		'accuracy': [accuracy],
 		'loss': [loss],
-		'date': [datetime.now().strftime("%d/%m/%Y %H:%M:%S")],
+		'date': [datetime.now().strftime("%Y/%m/%d %H:%M:%S")],
 		'time_taken': [str(datetime.now() - fold_start)],
 	})).reset_index(drop=True)
-	df.to_csv(PUBMED_FOLDER+'PubMed_BERT_Models_CV.csv', index=False, encoding='utf-8-sig')
+	df.to_csv(f'{PUBMED_FOLDER}/PubMed_BERT_Models_CV.csv', index=False, encoding='utf-8-sig')
 	print(df, '\n')
 
 
@@ -427,7 +449,7 @@ def run_fold(CURRENT_FOLD):
 
 	# save training history to .json
 	history_dict = history.history
-	with open(PUBMED_FOLDER+'results/training_history_{}.json'.format(BERT_MODEL_NICKNAME), 'w') as aus:
+	with open(f'{PUBMED_FOLDER}/results/training_history_{BERT_MODEL_NICKNAME}.json', 'w') as aus:
 		json.dump(history_dict, aus)
 
 	COLOR1 = IsleOfDogs3_4.hex_colors[3] # training
@@ -465,34 +487,7 @@ def run_fold(CURRENT_FOLD):
 	plt.legend(loc='lower right', fontsize=14)
 
 	# save image
-	fig.savefig(PUBMED_FOLDER+'results/training_history_{}.png'.format(BERT_MODEL_NICKNAME), dpi=300)
-
-
-	###### Load & test saved model ######
-
-	# # load saved model'
-	# reloaded_model = keras.models.load_model(PUBMED_FOLDER+'saved_models/'+BERT_MODEL_NICKNAME)
-	#
-	# # test some example sentences on the model
-	# def test_sentences(inputs, results):
-	# 	result_for_printing = \
-	# 	[f'input: {inputs[i]:<30} : score: {results[i][0]:.6f}'
-	# 		for i in range(len(inputs))]
-	# 	print(*result_for_printing, sep='\n')
-	#
-	# # sentences to try
-	# examples = [
-	# 	'there are many disparities in epidemiology',
-	# ]
-	#
-	# # compare results from reloaded model and model in local memory
-	# reloaded_results = tf.sigmoid(reloaded_model(tf.constant(examples)))
-	# original_results = tf.sigmoid(model(tf.constant(examples)))
-	#
-	# print('\n\nResults from saved model:')
-	# test_sentences(examples, reloaded_results)
-	# print('\nResults from model in local memory:')
-	# test_sentences(examples, original_results)
+	fig.savefig(f'{PUBMED_FOLDER}/results/training_history_{BERT_MODEL_NICKNAME}.png', dpi=300)
 
 
 ###### Execute ######
@@ -503,30 +498,32 @@ for CURRENT_FOLD in range(NUM_FOLDS):
 	print('Fold', CURRENT_FOLD)
 	print('####################################\n\n')
 	run_fold(CURRENT_FOLD)
-	
-	# get avg of results from each fold
-	df = pd.read_csv(PUBMED_FOLDER+'PubMed_BERT_Models_CV.csv')
-	df = df[df['model_id']==BERT_MODEL_NICKNAME_BASE]
-	print(df.shape)
-	print(df)
-	df_avg = pd.read_csv(PUBMED_FOLDER+'PubMed_BERT_Models_CV_avg.csv')
-	df_avg = df_avg.append(pd.DataFrame({
-		'id': [BERT_MODEL_NICKNAME_BASE],
-		'bert_model': [BERT_MODEL_SELECTED],
-		'input_type': [INPUT_TYPE],
-		'dataset': [DATASET_NAME],
-		'precision': [mean(df['precision'])],
-		'recall': [mean(df['recall'])],
-		'fscore': [mean(df['fscore'])],
-		'accuracy': [mean(df['accuracy'])],
-		'loss': [mean(df['loss'])],
-		'date': [datetime.now().strftime("%d/%m/%Y %H:%M:%S")],
-		'time_taken': [str(datetime.now() - start)],
-	})).reset_index(drop=True)
-	df_avg.to_csv(PUBMED_FOLDER+'PubMed_BERT_Models_CV_avg.csv', index=False, encoding='utf-8-sig')
-	print(df_avg, '\n')
+
+# get avg of results of all folds
+df_avg = pd.read_csv(f'{PUBMED_FOLDER}/PubMed_BERT_Models_CV_avg.csv')
+df_avg = df_avg.append(pd.DataFrame({
+	'id': [BERT_MODEL_NICKNAME_BASE],
+	'bert_model': [BERT_MODEL_SELECTED],
+	'dataset': [DATASET_NAME],
+	'precision': [mean(all_results['precision'])],
+	'recall': [mean(all_results['recall'])],
+	'fscore': [mean(all_results['fscore'])],
+	'accuracy': [mean(all_results['accuracy'])],
+	'loss': [mean(all_results['loss'])],
+	'date': [datetime.now().strftime("%Y/%m/%d %H:%M:%S")],
+	'time_taken': [str(datetime.now() - start)],
+})).reset_index(drop=True)
+df_avg.to_csv(f'{PUBMED_FOLDER}/PubMed_BERT_Models_CV_avg.csv', index=False, encoding='utf-8-sig')
+print(df_avg, '\n')
+
+# combine all predictions into one file
+with open(f'{PUBMED_FOLDER}/results/predictions_{BERT_MODEL_NICKNAME_BASE}_CV_all_raw.json', 'w') as aus:
+	json.dump(all_predictions, aus)
+with open(f'{PUBMED_FOLDER}/results/predictions_{BERT_MODEL_NICKNAME_BASE}_CV_all.json', 'w') as aus:
+	json.dump(all_predictions_thresh, aus)
 
 print('\nRUNTIME:', str(datetime.now() - start))
+
 
 
 

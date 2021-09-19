@@ -33,9 +33,9 @@ def evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME_TRAIN, DATASET_N
 
 	##### SELECT DATASET #####
 	
-	DATASET_FOLDER_TRAIN = 'bertdata/bertdata{}_{}'.format(DATASET_NAME_TRAIN, INPUT_TYPE)
-	DATASET_FOLDER_TEST = 'bertdata/bertdata{}_{}'.format(DATASET_NAME_TEST, INPUT_TYPE)
-	PUBMED_FOLDER = '/data/yangael/pubmed/'
+	DATASET_FOLDER_TRAIN = 'bertdata/bertdata{DATASET_NAME_TRAIN}_{INPUT_TYPE}'
+	DATASET_FOLDER_TEST = 'bertdata/bertdata{DATASET_NAME_TEST}_{INPUT_TYPE}'
+	PUBMED_FOLDER = '.' # direct this to main pubmed folder
 
 	print('\npubmed folder:', PUBMED_FOLDER)
 	print('train dataset:', DATASET_NAME_TRAIN)
@@ -54,7 +54,7 @@ def evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME_TRAIN, DATASET_N
 		'talkingheads': 'talking-heads_base',
 	}
 	BERT_MODEL_NAME = bert_models_dict[BERT_MODEL_SELECTED]
-	BERT_MODEL_NICKNAME = '{}{}_{}'.format(BERT_MODEL_SELECTED, DATASET_NAME_TRAIN, INPUT_TYPE)
+	BERT_MODEL_NICKNAME = '{BERT_MODEL_SELECTED}{DATASET_NAME_TRAIN}_{INPUT_TYPE}'
 
 	print('bert model:', BERT_MODEL_NAME)
 	print('bert model nickname:', BERT_MODEL_NICKNAME)
@@ -68,7 +68,7 @@ def evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME_TRAIN, DATASET_N
 	
 	# get training data
 	raw_train_ds = tf.keras.preprocessing.text_dataset_from_directory(
-		PUBMED_FOLDER+DATASET_FOLDER_TRAIN+'/train',
+		f'{PUBMED_FOLDER}/{DATASET_FOLDER_TRAIN}/train',
 		batch_size=batch_size,
 		validation_split=0.2,
 		subset='training',
@@ -78,7 +78,7 @@ def evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME_TRAIN, DATASET_N
 
 	# get validation data
 	val_ds = tf.keras.preprocessing.text_dataset_from_directory(
-		PUBMED_FOLDER+DATASET_FOLDER_TRAIN+'/train',
+		f'{PUBMED_FOLDER}/{DATASET_FOLDER_TRAIN}/train',
 		batch_size=batch_size,
 		validation_split=0.2,
 		subset='validation',
@@ -87,14 +87,14 @@ def evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME_TRAIN, DATASET_N
 
 	# get test data
 	test_ds = tf.keras.preprocessing.text_dataset_from_directory(
-		PUBMED_FOLDER+DATASET_FOLDER_TEST+'/test',
+		f'{PUBMED_FOLDER}/{DATASET_FOLDER_TEST}/test',
 		batch_size=batch_size)
 	test_ds = test_ds.cache().prefetch(buffer_size=AUTOTUNE)
 	
 
 	###### Load saved model ######
 	
-	model = keras.models.load_model(PUBMED_FOLDER+'saved_models/'+BERT_MODEL_NICKNAME)
+	model = keras.models.load_model(f'{PUBMED_FOLDER}/saved_models/'+BERT_MODEL_NICKNAME)
 	
 	###### Compile model ######
 	
@@ -145,20 +145,20 @@ def evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME_TRAIN, DATASET_N
 	predictions_thresh = [1 if tf.sigmoid(x) >= 0.5 else 0 for x in predictions]
 
 	# interpret and save predictions
-	with open(f'{PUBMED_FOLDER}results/predictions_{BERT_MODEL_NICKNAME}_test{DATASET_NAME_TEST}_raw.json', 'w') as aus:
+	with open(f'{PUBMED_FOLDER}/results/predictions_{BERT_MODEL_NICKNAME}_test{DATASET_NAME_TEST}_raw.json', 'w') as aus:
 		json.dump(predictions, aus)
-	with open(f'{PUBMED_FOLDER}results/predictions_{BERT_MODEL_NICKNAME}_test{DATASET_NAME_TEST}.json', 'w') as aus:
+	with open(f'{PUBMED_FOLDER}/results/predictions_{BERT_MODEL_NICKNAME}_test{DATASET_NAME_TEST}.json', 'w') as aus:
 		json.dump(predictions_thresh, aus)
 
 	# evaluate predictions
 	precision, recall, fscore, support = precision_recall_fscore_support(labels, predictions_thresh, average='macro')
-	print(f'\n\nPrecision: {accuracy}')
+	print(f'\n\nPrecision: {precision}')
 	print(f'Recall: {recall}')
 	print(f'F Score: {fscore}')
 	print(f'Support: {support}\n')
 
 	# save accuracy and loss to .csv
-	df = pd.read_csv(PUBMED_FOLDER+'PubMed_BERT_Models_Eval.csv')
+	df = pd.read_csv(f'{PUBMED_FOLDER}/PubMed_BERT_Models_Eval.csv')
 	df = df.append(pd.DataFrame({
 		'id': [BERT_MODEL_NICKNAME],
 		'bert_model': [BERT_MODEL_SELECTED],
@@ -170,10 +170,10 @@ def evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME_TRAIN, DATASET_N
 		'fscore': [fscore],
 		'accuracy': [accuracy],
 		'loss': [loss],
-		'date': [datetime.now().strftime("%d/%m/%Y %H:%M:%S")],
+		'date': [datetime.now().strftime("%Y/%m/%d %H:%M:%S")],
 		'time_taken': [str(datetime.now() - start)],
 	})).reset_index(drop=True)
-	df.to_csv(PUBMED_FOLDER+'PubMed_BERT_Models_Eval.csv', index=False, encoding='utf-8-sig')
+	df.to_csv(f'{PUBMED_FOLDER}/PubMed_BERT_Models_Eval.csv', index=False, encoding='utf-8-sig')
 	print(df, '\n')
 
 
@@ -200,19 +200,15 @@ def run_all():
 	for BERT_MODEL_SELECTED in models:
 		for INPUT_TYPE in input_types:
 			for DATASET_NAME in ['1', '2', '3']:
-				print('\n\n**********************************')
-				print(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME)
-				print('**********************************\n')
-				evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME, DATASET_NAME)
-				# try:
-				# 	print('\n\n**********************************')
-				# 	print(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME)
-				# 	print('**********************************\n')
-				# 	evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME, DATASET_NAME)
-				# except:
-				# 	print('\n####################################')
-				# 	print('FAILED:', BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME)
-				# 	print('####################################\n\n')
+				try:
+					print('\n\n**********************************')
+					print(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME)
+					print('**********************************\n')
+					evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME, DATASET_NAME)
+				except:
+					print('\n####################################')
+					print('FAILED:', BERT_MODEL_SELECTED, INPUT_TYPE, DATASET_NAME)
+					print('####################################\n\n')
 
 # run evaluate_bert() for all models using test data from a different dataset from the train data
 def run_all_different_datasets():
@@ -245,6 +241,7 @@ elif len(sys.argv) > 2:
 	evaluate_bert(BERT_MODEL_SELECTED, INPUT_TYPE, TRAIN_DATASET, TEST_DATASET)
 
 print('\nRUNTIME:', str(datetime.now() - start))
+
 
 
 
