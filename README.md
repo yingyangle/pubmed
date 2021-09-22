@@ -1,5 +1,7 @@
 # PubMed Health Disparity
 
+** **(currently still collecting articles -- will send email update when finished!)** **
+
 Health disparity is an important research area focusing on studying the health outcomes for people of disadvantaged identities and backgrounds. One issue however is that many researchers who study health disparities often move on to study other areas of health research due to a lack of NIH funding. Additionally, many of the researchers who study health disparities are members of those disadvantaged communities themselves, which could be a possible indicator for some sort of discrimination in the funding selection process.
 
 In this project, we want to see if the data reflects the trend of researchers moving away from studying health disparities by analyzing the articles about health disparity on PubMed. Our role in this project is to procure the data needed for this analysis. One way to retrieve these articles is to take articles matching the search term "disparity" on PubMed, however this does not always return results relevant to health disparity, and may include articles about other kinds of disparity. In order to get around this, we manually annotate the "relevance" of each article and train a model to predict whether or not a given article is about health disparity. 
