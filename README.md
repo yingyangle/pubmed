@@ -1,6 +1,6 @@
 # PubMed Health Disparity
 
-** **(currently still collecting articles -- will send email update when finished!)** **
+**  **(currently still collecting articles -- will send email update when finished!)**  **
 
 Health disparity is an important research area focusing on studying the health outcomes for people of disadvantaged identities and backgrounds. One issue however is that many researchers who study health disparities often move on to study other areas of health research due to a lack of NIH funding. Additionally, many of the researchers who study health disparities are members of those disadvantaged communities themselves, which could be a possible indicator for some sort of discrimination in the funding selection process.
 
@@ -78,12 +78,15 @@ You can use the following script to double check that all the package downloads 
 
 Finally, we want to copy over the files that were too large to be uploaded to GitHub. I changed my folder permissions so you should be able to access my files as long as you're in the `prudhome` user group, but please let me know if you have trouble accessing anything! Make sure to run the following commands from your cloned `pubmed` folder.
 
-    cp /data/yangael/pubmed/data/* data/
-    cp /data/yangael/pubmed/bertdata/* bertdata/
-    cp /data/yangael/pubmed/saved_models/* saved_models/
-    cp /data/yangael/pubmed/results/predictions* results/
     cp /data/yangael/pubmed/PubMed-and-PMC-w2v.bin .
-> **Runtime**: a long time
+	cp /data/yangael/pubmed/results/predictions* results/
+	cp -r -n /data/yangael/pubmed/data/* data/
+    cp -r -n /data/yangael/pubmed/bertdata/* bertdata/
+    cp -r -n /data/yangael/pubmed/saved_models/* saved_models/
+    
+> **Runtime**: ~2.5 hours
+
+Any files that are already existing in your directory won't be overwritten by the ones in mine. If you want your files to be overwritten by mine, you can remove the `-n` flag.
 
  If you've already set up the environment and files, you can skip most of the previous steps and just make sure to activate the environment before running anything. Also make sure to include this line in your `.pbs` files.
  
@@ -286,7 +289,7 @@ After getting a list of relevant articles, we want to get a list of the authors 
 
 where `PREDICTIONS_FILE` is the file containing the prediction results (e.g. `'results/predictions_unannotated_*.csv'`).
 
-The results will be saved as  `data/authors_relevant.json`.
+This script uses the author info in `data/article_authors.json` to get the info for each author, and gets the author for relevant articles in `data/annotations1+2.csv` and `PREDICTIONS_FILE`. The resulting list of relevant authors and their metadata will be saved in a subfolder as  `data/relevant_authors_articles/authors_relevant.json`.
 
 ### Getting articles by relevant authors
 
@@ -294,11 +297,10 @@ Once we've gotten our list of relevant authors, we want to search for all other 
 
     python search_authors.py
 
-This script will take the list of relevant authors in `data/authors_relevant.json` and save the article information for all articles written by each author. The article data will be saved in `data/articles_by_relevant_authors.csv` and `data/articles_by_relevant_authors.json`. 
+This script will take the list of relevant authors in `data/relevant_authors_articles/authors_relevant.json` and save the article information for all articles written by each author. The article data will be saved in the folders `data/relevant_authors_articles/saved_articles/json` and `data/relevant_authors_articles/saved_articles/csv`, with both folders containing the same data but into different file formats. Each folder contains a `.csv` or `.json` file for each author's articles. 
 
-**Note:** This script might take a long time to run, and you might need to submit multiple jobs to continue the script if you don't set the walltime high enough. If the script does time out, sometimes the `articles_by_relevant_authors.json` file will be corrupted since it wasn't able to finish fully writing the output file before the job timed out. In these cases, you might have to manually fix the file via python on the command line. To make sure it's working, you should be able to load the `.json` file using `json.load()`. After that, you can resubmit the job to continue searching the remaining authors. The script will make sure to skip any authors it has already searched by checking the authors in `articles_by_relevant_authors.json`.
+The script will also keep a list of authors it has searched in `data/relevant_authors_articles/authors_already_searched.json` so that you can pick up where you left off if needed. There's also a list of articles that have already been saved in `data/relevant_authors_articles/articles_already_saved.json` and a list of authors for which the article search failed saved in `data/relevant_authors_articles/failed_authors.json`, just for reference.
 
-**Another note:** The `articles_by_relevant_authors.json` file might get too big at some point to be loaded in python. You'll get an error that says something like `OSError: [Errno 28] No space left on device`. In this case, rename the `articles_by_relevant_authors.json` file to be something else (e.g. `articles_by_relevant_authors1.json` and create a new blank `articles_by_relevant_authors.json` file just containing `[]`. Do the same for the `articles_by_relevant_authors.csv` file, and create a new blank one with just the header columns as a row of text.
 
 ### Predicting relevance of articles by relevant authors
 

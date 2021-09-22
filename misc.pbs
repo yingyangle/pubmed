@@ -1,14 +1,14 @@
 #!/bin/tcsh
-#PBS -l mem=8gb,nodes=1:ppn=1,walltime=200:00:00
+#PBS -l mem=12gb,nodes=1:ppn=1,walltime=200:00:00
 #PBS -m abe -M yangael@bc.edu
 cd pubmed
 conda activate tf
 
 # python get_articles.py 'disparity' 
 # python combine_articles.py
-python format_bert_data.py 'full'
+# python format_bert_data.py 'full'
 # python get_relevant_authors.py 'results/predictions_unannotated_talkingheads1+2_title+abstract.csv'
-# python search_authors.py
+python search_authors.py
 
 # NOTES:
 # python get_articles.py SEARCH_TERM
